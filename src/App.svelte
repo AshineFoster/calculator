@@ -180,43 +180,49 @@
 	<form class="uk-form-horizontal">
 		
 		<div class="uk-margin">
-			<label>
-				<input
-					class="uk-radio"
-					type="radio"
-					bind:group={sharesOrPrice}
-					value={'price'} />
-				Price
-			</label>
-			<label>
-				<input
-					class="uk-radio"
-					type="radio"
-					bind:group={sharesOrPrice}
-					value={'shares'} />
-				Shares
-			</label>
+			<div class="uk-form-label">Price / Shares:</div>
+			<div class="uk-form-controls uk-form-controls-text">
+				<label>
+					<input
+						class="uk-radio"
+						type="radio"
+						bind:group={sharesOrPrice}
+						value={'price'} />
+					Price
+				</label>
+				<label>
+					<input
+						class="uk-radio"
+						type="radio"
+						bind:group={sharesOrPrice}
+						value={'shares'} />
+					Shares
+				</label>
+			</div>
 		</div>
 	</form>
 
 	{#if sharesOrPrice === 'price'}
 		<form class="uk-form-horizontal">
 			<div class="uk-margin">
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={buyOrSell}
-						value={'buy'} />
-					Buy
-				</label>
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={buyOrSell}
-						value={'sell'} />
-					Sell</label>
+				<div class="uk-form-label">Buy / Sell:</div>
+				<div class="uk-form-controls uk-form-controls-text">
+					<label>
+						<input
+							class="uk-radio"
+							type="radio"
+							bind:group={buyOrSell}
+							value={'buy'} />
+						Buy
+					</label>
+					<label>
+						<input
+							class="uk-radio"
+							type="radio"
+							bind:group={buyOrSell}
+							value={'sell'} />
+						Sell</label>
+				</div>
 			</div>
 
 			<div class="uk-margin">
@@ -294,21 +300,24 @@
 	{:else if sharesOrPrice === 'shares'}
 		<form class="uk-form-horizontal">
 			<div class="uk-margin">
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={buyOrSellShares}
-						value={'buy'} />
-					Buy
-				</label>
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={buyOrSellShares}
-						value={'sell'} />
-					Sell</label>
+				<div class="uk-form-label">Buy / Sell:</div>
+				<div class="uk-form-controls uk-form-controls-text">
+					<label>
+						<input
+							class="uk-radio"
+							type="radio"
+							bind:group={buyOrSellShares}
+							value={'buy'} />
+						Buy
+					</label>
+					<label>
+						<input
+							class="uk-radio"
+							type="radio"
+							bind:group={buyOrSellShares}
+							value={'sell'} />
+						Sell</label>
+				</div>
 			</div>
 
 			<div class="uk-margin">
