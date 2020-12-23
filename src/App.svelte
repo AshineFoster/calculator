@@ -39,11 +39,19 @@
 		minCommShares
 	);
 
-	// find out how much money it cost to certain trades
+	$: minValueShares = findPrice(
+		buyOrSellShares,
+		minShares,
+		pricePerShareShares,
+		commissionPercentShares,
+		minCommShares
+	);
+
+	// find out how much money it cost to buy/sell a certain number of shares
 	let findPrice = function (
-		buyOrSell,
-		numOfShares,
-		pricePerShare,
+		buyOrSell = "buy",
+		numOfShares = 0,
+		pricePerShare = 0,
 		commissionPercent,
 		minComm
 	) {
@@ -94,13 +102,6 @@
 				? Math.ceil(cash.divide(pricePerShare).value)
 				: currency(1),
 			maxShares = buyOrSell === "buy" ? tempMaxShares : tempMaxShares * 2,
-			minValues = findPrice(
-				buyOrSell,
-				minShares,
-				pricePerShare,
-				commissionPercent,
-				minComm
-			),
 			ans = iterativeFunction(
 				maxShares,
 				minShares,
@@ -162,25 +163,14 @@
 
 		return false;
 	};
-
-	// use console to test values
-	// let v = findPrice("buy", 1000, 40, 0.5, 0);
-	// console.log(v);
-	// let w = calcMaxShares("buy", 40381.8, 40, 0.5, 0);
-	// console.log(w);
-
-	// let vs = findPrice("sell", 961, 43.5, 0.75, 0);
-	// console.log(vs);
-	// let ws = calcMaxShares("sell", 41284.3, 43.5, 0.75, 0);
-	// console.log(ws);
 </script>
 
 <div class="uk-container uk-container-large">
-
 	<form class="uk-form-horizontal">
-		
 		<div class="uk-margin">
-			<div class="uk-form-label">Price / Shares:</div>
+			<div class="uk-form-label">
+				Price / Shares:
+			</div>
 			<div class="uk-form-controls uk-form-controls-text">
 				<label>
 					<input
@@ -363,7 +353,7 @@
 			</div>
 		</form>
 
-		{#if avaliableCash && pricePerShareShares && avaliableCash > pricePerShareShares}
+		{#if avaliableCash && pricePerShareShares && avaliableCash >= minValueShares.finalPrice.value}
 			<!-- content here -->
 			<table class="uk-table  uk-table-divider">
 				<tr>
@@ -404,7 +394,13 @@
 			</table>
 		{:else}
 			<!-- else content here -->
-			<p>enter info</p>
+			<p>
+				Not enough cash.
+				{minValueShares.finalPrice.format()}
+				is needed to {buyOrSellShares}
+				{minShares}
+				share.
+			</p>
 		{/if}
 	{:else}
 		<p>should not show</p>
