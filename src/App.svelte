@@ -1,8 +1,5 @@
 <script>
 	import currency from "currency.js";
-	import "../node_modules/uikit/dist/css/uikit.min.css";
-	import "../node_modules/uikit/dist/js/uikit.min.js";
-	import "../node_modules/uikit/dist/js/uikit-icons.min.js";
 
 	const cess = 0.0033;
 	const trade = 0.0;
