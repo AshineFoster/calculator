@@ -6,8 +6,12 @@
 	const gct = 0.15;
 	const minShares = 1;
 
-	let buyOrSell = "buy",
-		sharesOrPrice = "price",
+	const USD = (value) => currency(value, { symbol: "$", precision: 4 });
+	const JMD = (value) => currency(value, { symbol: "$", precision: 2 });
+
+	let sharesOrPrice = "price",
+		currencyType = "JMD",
+		buyOrSell = "buy",
 		numOfShares,
 		pricePerShare,
 		commissionPercent = 2,
@@ -44,6 +48,16 @@
 		minCommShares
 	);
 
+	$: currFormat = function (value, currency) {
+		let formattedCurrency = "";
+		if (currency == "JMD") {
+			formattedCurrency = JMD(value).format();
+		} else {
+			formattedCurrency = USD(value).format();
+		}
+		return formattedCurrency;
+	};
+
 	// find out how much money it cost to buy/sell a certain number of shares
 	let findPrice = function (
 		buyOrSell = "buy",
@@ -52,13 +66,17 @@
 		commissionPercent,
 		minComm
 	) {
-		let grossPrice = currency(numOfShares).multiply(pricePerShare),
-			minCommission = currency(minComm),
-			commission = currency(commissionPercent, { precision: 6 }).divide(
+		let curren;
+		if (currencyType == "USD") {
+			curren = USD;
+		} else {curren = JMD;}
+		let grossPrice = curren(numOfShares).multiply(pricePerShare),
+			minCommission = curren(minComm),
+			commission = curren(commissionPercent, { precision: 6 }).divide(
 				100
 			),
-			tempCommission = currency(grossPrice.multiply(commission)),
-			finalCommission = currency(
+			tempCommission = curren(grossPrice.multiply(commission)),
+			finalCommission = curren(
 				tempCommission.intValue < minCommission.intValue
 					? minCommission
 					: tempCommission
@@ -67,14 +85,13 @@
 			tradeFee = grossPrice.multiply(trade),
 			gctFee = finalCommission.add(cessFee).add(tradeFee).multiply(gct),
 			totalFees = gctFee.add(cessFee).add(tradeFee).add(finalCommission),
-			finalPrice = currency(0);
+			finalPrice = curren(0);
 
 		if (buyOrSell === "buy") {
 			finalPrice = grossPrice.add(totalFees);
 		} else if (buyOrSell === "sell") {
 			finalPrice = grossPrice.subtract(totalFees);
 		}
-
 		return {
 			grossPrice: grossPrice,
 			finalCommission: finalCommission,
@@ -94,10 +111,15 @@
 		commissionPercent,
 		minComm
 	) {
-		let cash = currency(avaliableCash),
+				let curren;
+		if (currencyType == "USD") {
+			curren = USD;
+		} else {curren = JMD;}
+
+		let cash = curren(avaliableCash),
 			tempMaxShares = pricePerShare
 				? Math.ceil(cash.divide(pricePerShare).value)
-				: currency(1),
+				: curren(1),
 			maxShares = buyOrSell === "buy" ? tempMaxShares : tempMaxShares * 2,
 			ans = iterativeFunction(
 				maxShares,
@@ -165,16 +187,15 @@
 <div class="uk-container uk-container-large">
 	<form class="uk-form-horizontal">
 		<div class="uk-margin">
-			<div class="uk-form-label">
-				Price / Shares:
-			</div>
+			<div class="uk-form-label">Price / Shares:</div>
 			<div class="uk-form-controls uk-form-controls-text">
 				<label>
 					<input
 						class="uk-radio"
 						type="radio"
 						bind:group={sharesOrPrice}
-						value={'price'} />
+						value={"price"}
+					/>
 					Price
 				</label>
 				<label>
@@ -182,14 +203,37 @@
 						class="uk-radio"
 						type="radio"
 						bind:group={sharesOrPrice}
-						value={'shares'} />
+						value={"shares"}
+					/>
 					Shares
+				</label>
+			</div>
+
+			<div class="uk-form-label">Currency:</div>
+			<div class="uk-form-controls uk-form-controls-text">
+				<label>
+					<input
+						class="uk-radio"
+						type="radio"
+						bind:group={currencyType}
+						value={"JMD"}
+					/>
+					Jamaican dollars (JMD$)
+				</label>
+				<label>
+					<input
+						class="uk-radio"
+						type="radio"
+						bind:group={currencyType}
+						value={"USD"}
+					/>
+					American dollars (USD$)
 				</label>
 			</div>
 		</div>
 	</form>
 
-	{#if sharesOrPrice === 'price'}
+	{#if sharesOrPrice === "price"}
 		<form class="uk-form-horizontal">
 			<div class="uk-margin">
 				<div class="uk-form-label">Buy / Sell:</div>
@@ -199,7 +243,8 @@
 							class="uk-radio"
 							type="radio"
 							bind:group={buyOrSell}
-							value={'buy'} />
+							value={"buy"}
+						/>
 						Buy
 					</label>
 					<label>
@@ -207,27 +252,32 @@
 							class="uk-radio"
 							type="radio"
 							bind:group={buyOrSell}
-							value={'sell'} />
-						Sell</label>
+							value={"sell"}
+						/>
+						Sell</label
+					>
 				</div>
 			</div>
 
 			<div class="uk-margin">
-				<label class="uk-form-label" for="num-of-shares">Number of
-					shares:</label>
+				<label class="uk-form-label" for="num-of-shares"
+					>Number of shares:</label
+				>
 				<div class="uk-form-controls">
 					<input
 						class="uk-input"
 						id="num-of-shares"
 						type="number"
 						bind:value={numOfShares}
-						min="0" />
+						min="0"
+					/>
 				</div>
 			</div>
 
 			<div class="uk-margin">
-				<label class="uk-form-label" for="price-per-share-price">Price
-					per share:</label>
+				<label class="uk-form-label" for="price-per-share-price"
+					>Price per share:</label
+				>
 				<div class="uk-form-controls">
 					<input
 						class="uk-input"
@@ -235,13 +285,14 @@
 						type="number"
 						bind:value={pricePerShare}
 						min="0"
-						step="0.01" />
+					/>
 				</div>
 			</div>
 
 			<div class="uk-margin">
 				<label class="uk-form-label" for="commission-percent-price">
-					Broker commission (%):</label>
+					Broker commission (%):</label
+				>
 				<div class="uk-form-controls">
 					<input
 						class="uk-input"
@@ -249,7 +300,8 @@
 						type="number"
 						bind:value={commissionPercent}
 						min="0"
-						step="0.01" />
+						step="0.01"
+					/>
 				</div>
 			</div>
 		</form>
@@ -257,34 +309,35 @@
 		<table class="uk-table uk-table-divider">
 			<tr>
 				<td>Gross price</td>
-				<td>{priceDisplay.grossPrice.format()}</td>
+				<td class="uk-align-right">{currFormat(priceDisplay.grossPrice, currencyType)}</td>
 			</tr>
 			<tr>
 				<td>Commission</td>
-				<td>{priceDisplay.finalCommission.format()}</td>
+				<td class="uk-align-right">{currFormat(priceDisplay.finalCommission, currencyType)}</td
+				>
 			</tr>
 			<tr>
 				<td>Cess fee</td>
-				<td>{priceDisplay.cess.format()}</td>
+				<td class="uk-align-right">{currFormat(priceDisplay.cess, currencyType)}</td>
 			</tr>
 			<tr>
 				<td>Trade fee</td>
-				<td>{priceDisplay.trade.format()}</td>
+				<td class="uk-align-right">{currFormat(priceDisplay.trade, currencyType)}</td>
 			</tr>
 			<tr>
 				<td>GCT tax</td>
-				<td>{priceDisplay.gct.format()}</td>
+				<td class="uk-align-right">{currFormat(priceDisplay.gct, currencyType)}</td>
 			</tr>
 			<tr>
 				<td>Total fees</td>
-				<td>{priceDisplay.totalFees.format()}</td>
+				<td class="uk-align-right">{currFormat(priceDisplay.totalFees, currencyType)}</td>
 			</tr>
 			<tr>
 				<td>Final price</td>
-				<td>{priceDisplay.finalPrice.format()}</td>
+				<td class="uk-align-right">{currFormat(priceDisplay.finalPrice, currencyType)}</td>
 			</tr>
 		</table>
-	{:else if sharesOrPrice === 'shares'}
+	{:else if sharesOrPrice === "shares"}
 		<form class="uk-form-horizontal">
 			<div class="uk-margin">
 				<div class="uk-form-label">Buy / Sell:</div>
@@ -294,7 +347,8 @@
 							class="uk-radio"
 							type="radio"
 							bind:group={buyOrSellShares}
-							value={'buy'} />
+							value={"buy"}
+						/>
 						Buy
 					</label>
 					<label>
@@ -302,28 +356,32 @@
 							class="uk-radio"
 							type="radio"
 							bind:group={buyOrSellShares}
-							value={'sell'} />
-						Sell</label>
+							value={"sell"}
+						/>
+						Sell</label
+					>
 				</div>
 			</div>
 
 			<div class="uk-margin">
-				<label class="uk-form-label" for="cash-avaliable">Avaliable
-					cash:</label>
+				<label class="uk-form-label" for="cash-avaliable"
+					>Avaliable cash:</label
+				>
 				<div class="uk-form-controls">
 					<input
 						class="uk-input"
 						id="cash-avaliable"
 						type="number"
 						bind:value={avaliableCash}
-						step="0.01"
-						min="0" />
+						min="0"
+					/>
 				</div>
 			</div>
 
 			<div class="uk-margin">
-				<label class="uk-form-label" for="price-per-share-price">Price
-					per share:</label>
+				<label class="uk-form-label" for="price-per-share-price"
+					>Price per share:</label
+				>
 				<div class="uk-form-controls">
 					<input
 						class="uk-input"
@@ -331,13 +389,14 @@
 						type="number"
 						bind:value={pricePerShareShares}
 						min="0"
-						step="0.01" />
+					/>
 				</div>
 			</div>
 
 			<div class="uk-margin">
 				<label class="uk-form-label" for="commission-percent-price">
-					Broker commission (%):</label>
+					Broker commission (%):</label
+				>
 				<div class="uk-form-controls">
 					<input
 						class="uk-input"
@@ -345,7 +404,8 @@
 						type="number"
 						bind:value={commissionPercentShares}
 						min="0"
-						step="0.01" />
+						step="0.01"
+					/>
 				</div>
 			</div>
 		</form>
@@ -356,44 +416,46 @@
 				<tr>
 					<td>Number of shares</td>
 					<td>
-						{new Intl.NumberFormat('en-JM').format(sharesDisplay.sharesNum)}
+						{new Intl.NumberFormat("en-JM").format(
+							sharesDisplay.sharesNum
+						)}
 					</td>
 				</tr>
 
 				<tr>
 					<td>Gross price</td>
-					<td>{sharesDisplay.grossPrice.format()}</td>
+					<td>{currFormat(sharesDisplay.grossPrice, currencyType)}</td>
 				</tr>
 				<tr>
 					<td>Commission</td>
-					<td>{sharesDisplay.finalCommission.format()}</td>
+					<td>{currFormat(sharesDisplay.finalCommission, currencyType)}</td>
 				</tr>
 				<tr>
 					<td>Cess fee</td>
-					<td>{sharesDisplay.cess.format()}</td>
+					<td>{currFormat(sharesDisplay.cess, currencyType)}</td>
 				</tr>
 				<tr>
 					<td>Trade fee</td>
-					<td>{sharesDisplay.trade.format()}</td>
+					<td>{currFormat(sharesDisplay.trade, currencyType)}</td>
 				</tr>
 				<tr>
 					<td>GCT tax</td>
-					<td>{sharesDisplay.gct.format()}</td>
+					<td>{currFormat(sharesDisplay.gct, currencyType)}</td>
 				</tr>
 				<tr>
 					<td>Total fees</td>
-					<td>{sharesDisplay.totalFees.format()}</td>
+					<td>{currFormat(sharesDisplay.totalFees, currencyType)}</td>
 				</tr>
 				<tr>
 					<td>Final price</td>
-					<td>{sharesDisplay.finalPrice.format()}</td>
+					<td>{currFormat(sharesDisplay.finalPrice, currencyType)}</td>
 				</tr>
 			</table>
 		{:else}
 			<!-- else content here -->
 			<p>
 				Not enough cash.
-				{minValueShares.finalPrice.format()}
+				{currFormat(minValueShares.finalPrice, currencyType)}
 				is needed to {buyOrSellShares}
 				{minShares}
 				share.
