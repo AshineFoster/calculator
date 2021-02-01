@@ -218,7 +218,7 @@
 						bind:group={currencyType}
 						value={"JMD"}
 					/>
-					Jamaican dollars (JMD$)
+					JMD$
 				</label>
 				<label>
 					<input
@@ -227,7 +227,7 @@
 						bind:group={currencyType}
 						value={"USD"}
 					/>
-					American dollars (USD$)
+					USD$
 				</label>
 			</div>
 		</div>
