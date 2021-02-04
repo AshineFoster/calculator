@@ -189,8 +189,8 @@
 </script>
 
 <div class="uk-container uk-container-large">
-	<div uk-grid>
-		<div  class="uk-width-1-2">
+	<div class="uk-grid-divider" uk-grid>
+		<div class="uk-width-1-2 uk-grid-item-match">
 			<form class="uk-form-horizontal">
 				<div class="uk-margin">
 					<div class="uk-form-label">Price / Shares:</div>
@@ -399,7 +399,7 @@
 			{/if}
 		</div>
 
-		<div  class="uk-width-1-2">
+		<div class="uk-width-1-2">
 			{#if sharesOrPrice === "price"}
 				<table class="uk-table uk-table-divider uk-table-middle">
 					<tr>
@@ -497,7 +497,7 @@
 								)}</td
 							>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td>Trade fee</td>
 							<td class="uk-text-right"
 								>{currFormat(
@@ -505,7 +505,7 @@
 									currencyType
 								)}</td
 							>
-						</tr>
+						</tr> -->
 						<tr>
 							<td>GCT tax</td>
 							<td class="uk-text-right"
