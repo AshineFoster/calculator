@@ -69,7 +69,9 @@
 		let curren;
 		if (currencyType == "USD") {
 			curren = USD;
-		} else {curren = JMD;}
+		} else {
+			curren = JMD;
+		}
 		let grossPrice = curren(numOfShares).multiply(pricePerShare),
 			minCommission = curren(minComm),
 			commission = curren(commissionPercent, { precision: 6 }).divide(
@@ -111,10 +113,12 @@
 		commissionPercent,
 		minComm
 	) {
-				let curren;
+		let curren;
 		if (currencyType == "USD") {
 			curren = USD;
-		} else {curren = JMD;}
+		} else {
+			curren = JMD;
+		}
 
 		let cash = curren(avaliableCash),
 			tempMaxShares = pricePerShare
@@ -185,283 +189,362 @@
 </script>
 
 <div class="uk-container uk-container-large">
-	<form class="uk-form-horizontal">
-		<div class="uk-margin">
-			<div class="uk-form-label">Price / Shares:</div>
-			<div class="uk-form-controls uk-form-controls-text">
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={sharesOrPrice}
-						value={"price"}
-					/>
-					Price
-				</label>
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={sharesOrPrice}
-						value={"shares"}
-					/>
-					Shares
-				</label>
-			</div>
+	<div>
+		<div>
+			<form class="uk-form-horizontal">
+				<div class="uk-margin">
+					<div class="uk-form-label">Price / Shares:</div>
+					<div class="uk-form-controls uk-form-controls-text">
+						<label>
+							<input
+								class="uk-radio"
+								type="radio"
+								bind:group={sharesOrPrice}
+								value={"price"}
+							/>
+							Price
+						</label>
+						<br />
+						<label>
+							<input
+								class="uk-radio"
+								type="radio"
+								bind:group={sharesOrPrice}
+								value={"shares"}
+							/>
+							Shares
+						</label>
+					</div>
 
-			<div class="uk-form-label">Currency:</div>
-			<div class="uk-form-controls uk-form-controls-text">
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={currencyType}
-						value={"JMD"}
-					/>
-					JMD$
-				</label>
-				<label>
-					<input
-						class="uk-radio"
-						type="radio"
-						bind:group={currencyType}
-						value={"USD"}
-					/>
-					USD$
-				</label>
-			</div>
+					<div class="uk-form-label">Currency:</div>
+					<div class="uk-form-controls uk-form-controls-text">
+						<label>
+							<input
+								class="uk-radio"
+								type="radio"
+								bind:group={currencyType}
+								value={"JMD"}
+							/>
+							JMD
+						</label>
+						<br />
+						<label>
+							<input
+								class="uk-radio"
+								type="radio"
+								bind:group={currencyType}
+								value={"USD"}
+							/>
+							USD
+						</label>
+					</div>
+				</div>
+			</form>
+
+			{#if sharesOrPrice === "price"}
+				<form class="uk-form-horizontal">
+					<div class="uk-margin">
+						<div class="uk-form-label">Buy / Sell:</div>
+						<div class="uk-form-controls uk-form-controls-text">
+							<label>
+								<input
+									class="uk-radio"
+									type="radio"
+									bind:group={buyOrSell}
+									value={"buy"}
+								/>
+								Buy
+							</label>
+							<br />
+							<label>
+								<input
+									class="uk-radio"
+									type="radio"
+									bind:group={buyOrSell}
+									value={"sell"}
+								/>
+								Sell</label
+							>
+						</div>
+					</div>
+
+					<div class="uk-margin">
+						<label class="uk-form-label" for="num-of-shares"
+							>Number of shares:</label
+						>
+						<div class="uk-form-controls">
+							<input
+								class="uk-input uk-width-1-3"
+								id="num-of-shares"
+								type="number"
+								bind:value={numOfShares}
+								min="0"
+							/>
+						</div>
+					</div>
+
+					<div class="uk-margin">
+						<label class="uk-form-label" for="price-per-share-price"
+							>Price per share:</label
+						>
+						<div class="uk-form-controls">
+							<input
+								class="uk-input uk-width-1-3"
+								id="price-per-share-price"
+								type="number"
+								bind:value={pricePerShare}
+								min="0"
+								step="any"
+							/>
+						</div>
+					</div>
+
+					<div class="uk-margin">
+						<label
+							class="uk-form-label"
+							for="commission-percent-price">
+							Broker commission (%):</label
+						>
+						<div class="uk-form-controls">
+							<input
+								class="uk-input uk-width-1-3"
+								id="commission-percent-price"
+								type="number"
+								bind:value={commissionPercent}
+								min="0"
+								step="0.01"
+							/>
+						</div>
+					</div>
+				</form>
+			{:else if sharesOrPrice === "shares"}
+				<form class="uk-form-horizontal">
+					<div class="uk-margin">
+						<div class="uk-form-label">Buy / Sell:</div>
+						<div class="uk-form-controls uk-form-controls-text">
+							<label>
+								<input
+									class="uk-radio"
+									type="radio"
+									bind:group={buyOrSellShares}
+									value={"buy"}
+								/>
+								Buy
+							</label>
+							<br />
+							<label>
+								<input
+									class="uk-radio"
+									type="radio"
+									bind:group={buyOrSellShares}
+									value={"sell"}
+								/>
+								Sell</label
+							>
+						</div>
+					</div>
+
+					<div class="uk-margin">
+						<label class="uk-form-label" for="cash-avaliable"
+							>Avaliable cash:</label
+						>
+						<div class="uk-form-controls">
+							<input
+								class="uk-input uk-width-1-3"
+								id="cash-avaliable"
+								type="number"
+								bind:value={avaliableCash}
+								min="0"
+								step="any"
+							/>
+						</div>
+					</div>
+
+					<div class="uk-margin">
+						<label class="uk-form-label" for="price-per-share-price"
+							>Price per share:</label
+						>
+						<div class="uk-form-controls">
+							<input
+								class="uk-input uk-width-1-3"
+								id="price-per-share-price"
+								type="number"
+								bind:value={pricePerShareShares}
+								min="0"
+								step="any"
+							/>
+						</div>
+					</div>
+
+					<div class="uk-margin">
+						<label
+							class="uk-form-label"
+							for="commission-percent-price">
+							Broker commission (%):</label
+						>
+						<div class="uk-form-controls">
+							<input
+								class="uk-input uk-width-1-3"
+								id="commission-percent-price"
+								type="number"
+								bind:value={commissionPercentShares}
+								min="0"
+								step="0.01"
+							/>
+						</div>
+					</div>
+				</form>
+			{:else}
+				<p>should not show</p>
+			{/if}
 		</div>
-	</form>
 
-	{#if sharesOrPrice === "price"}
-		<form class="uk-form-horizontal">
-			<div class="uk-margin">
-				<div class="uk-form-label">Buy / Sell:</div>
-				<div class="uk-form-controls uk-form-controls-text">
-					<label>
-						<input
-							class="uk-radio"
-							type="radio"
-							bind:group={buyOrSell}
-							value={"buy"}
-						/>
-						Buy
-					</label>
-					<label>
-						<input
-							class="uk-radio"
-							type="radio"
-							bind:group={buyOrSell}
-							value={"sell"}
-						/>
-						Sell</label
-					>
-				</div>
-			</div>
+		<div>
+			{#if sharesOrPrice === "price"}
+				<table class="uk-table uk-table-divider uk-table-middle">
+					<tr>
+						<td>Gross price</td>
+						<td class="uk-text-right"
+							>{currFormat(
+								priceDisplay.grossPrice,
+								currencyType
+							)}</td
+						>
+					</tr>
+					<tr>
+						<td>Commission</td>
+						<td class="uk-text-right"
+							>{currFormat(
+								priceDisplay.finalCommission,
+								currencyType
+							)}</td
+						>
+					</tr>
+					<tr>
+						<td>Cess fee</td>
+						<td class="uk-text-right"
+							>{currFormat(priceDisplay.cess, currencyType)}</td
+						>
+					</tr>
+					<tr>
+						<td>Trade fee</td>
+						<td class="uk-text-right"
+							>{currFormat(priceDisplay.trade, currencyType)}</td
+						>
+					</tr>
+					<tr>
+						<td>GCT tax</td>
+						<td class="uk-text-right"
+							>{currFormat(priceDisplay.gct, currencyType)}</td
+						>
+					</tr>
+					<tr>
+						<td>Total fees</td>
+						<td class="uk-text-right"
+							>{currFormat(
+								priceDisplay.totalFees,
+								currencyType
+							)}</td
+						>
+					</tr>
+					<tr>
+						<td>Final price</td>
+						<td class="uk-text-right"
+							>{currFormat(
+								priceDisplay.finalPrice,
+								currencyType
+							)}</td
+						>
+					</tr>
+				</table>
+			{:else if sharesOrPrice === "shares"}
+				{#if avaliableCash && pricePerShareShares && avaliableCash >= minValueShares.finalPrice.value}
+					<!-- content here -->
+					<table class="uk-table  uk-table-divider uk-table-middle">
+						<tr>
+							<td>Number of shares</td>
+							<td class="uk-text-right">
+								{new Intl.NumberFormat("en-JM").format(
+									sharesDisplay.sharesNum
+								)}
+							</td>
+						</tr>
 
-			<div class="uk-margin">
-				<label class="uk-form-label" for="num-of-shares"
-					>Number of shares:</label
-				>
-				<div class="uk-form-controls">
-					<input
-						class="uk-input"
-						id="num-of-shares"
-						type="number"
-						bind:value={numOfShares}
-						min="0"
-					/>
-				</div>
-			</div>
-
-			<div class="uk-margin">
-				<label class="uk-form-label" for="price-per-share-price"
-					>Price per share:</label
-				>
-				<div class="uk-form-controls">
-					<input
-						class="uk-input"
-						id="price-per-share-price"
-						type="number"
-						bind:value={pricePerShare}
-						min="0"
-					/>
-				</div>
-			</div>
-
-			<div class="uk-margin">
-				<label class="uk-form-label" for="commission-percent-price">
-					Broker commission (%):</label
-				>
-				<div class="uk-form-controls">
-					<input
-						class="uk-input"
-						id="commission-percent-price"
-						type="number"
-						bind:value={commissionPercent}
-						min="0"
-						step="0.01"
-					/>
-				</div>
-			</div>
-		</form>
-
-		<table class="uk-table uk-table-divider">
-			<tr>
-				<td>Gross price</td>
-				<td class="uk-align-right">{currFormat(priceDisplay.grossPrice, currencyType)}</td>
-			</tr>
-			<tr>
-				<td>Commission</td>
-				<td class="uk-align-right">{currFormat(priceDisplay.finalCommission, currencyType)}</td
-				>
-			</tr>
-			<tr>
-				<td>Cess fee</td>
-				<td class="uk-align-right">{currFormat(priceDisplay.cess, currencyType)}</td>
-			</tr>
-			<tr>
-				<td>Trade fee</td>
-				<td class="uk-align-right">{currFormat(priceDisplay.trade, currencyType)}</td>
-			</tr>
-			<tr>
-				<td>GCT tax</td>
-				<td class="uk-align-right">{currFormat(priceDisplay.gct, currencyType)}</td>
-			</tr>
-			<tr>
-				<td>Total fees</td>
-				<td class="uk-align-right">{currFormat(priceDisplay.totalFees, currencyType)}</td>
-			</tr>
-			<tr>
-				<td>Final price</td>
-				<td class="uk-align-right">{currFormat(priceDisplay.finalPrice, currencyType)}</td>
-			</tr>
-		</table>
-	{:else if sharesOrPrice === "shares"}
-		<form class="uk-form-horizontal">
-			<div class="uk-margin">
-				<div class="uk-form-label">Buy / Sell:</div>
-				<div class="uk-form-controls uk-form-controls-text">
-					<label>
-						<input
-							class="uk-radio"
-							type="radio"
-							bind:group={buyOrSellShares}
-							value={"buy"}
-						/>
-						Buy
-					</label>
-					<label>
-						<input
-							class="uk-radio"
-							type="radio"
-							bind:group={buyOrSellShares}
-							value={"sell"}
-						/>
-						Sell</label
-					>
-				</div>
-			</div>
-
-			<div class="uk-margin">
-				<label class="uk-form-label" for="cash-avaliable"
-					>Avaliable cash:</label
-				>
-				<div class="uk-form-controls">
-					<input
-						class="uk-input"
-						id="cash-avaliable"
-						type="number"
-						bind:value={avaliableCash}
-						min="0"
-					/>
-				</div>
-			</div>
-
-			<div class="uk-margin">
-				<label class="uk-form-label" for="price-per-share-price"
-					>Price per share:</label
-				>
-				<div class="uk-form-controls">
-					<input
-						class="uk-input"
-						id="price-per-share-price"
-						type="number"
-						bind:value={pricePerShareShares}
-						min="0"
-					/>
-				</div>
-			</div>
-
-			<div class="uk-margin">
-				<label class="uk-form-label" for="commission-percent-price">
-					Broker commission (%):</label
-				>
-				<div class="uk-form-controls">
-					<input
-						class="uk-input"
-						id="commission-percent-price"
-						type="number"
-						bind:value={commissionPercentShares}
-						min="0"
-						step="0.01"
-					/>
-				</div>
-			</div>
-		</form>
-
-		{#if avaliableCash && pricePerShareShares && avaliableCash >= minValueShares.finalPrice.value}
-			<!-- content here -->
-			<table class="uk-table  uk-table-divider">
-				<tr>
-					<td>Number of shares</td>
-					<td>
-						{new Intl.NumberFormat("en-JM").format(
-							sharesDisplay.sharesNum
-						)}
-					</td>
-				</tr>
-
-				<tr>
-					<td>Gross price</td>
-					<td>{currFormat(sharesDisplay.grossPrice, currencyType)}</td>
-				</tr>
-				<tr>
-					<td>Commission</td>
-					<td>{currFormat(sharesDisplay.finalCommission, currencyType)}</td>
-				</tr>
-				<tr>
-					<td>Cess fee</td>
-					<td>{currFormat(sharesDisplay.cess, currencyType)}</td>
-				</tr>
-				<tr>
-					<td>Trade fee</td>
-					<td>{currFormat(sharesDisplay.trade, currencyType)}</td>
-				</tr>
-				<tr>
-					<td>GCT tax</td>
-					<td>{currFormat(sharesDisplay.gct, currencyType)}</td>
-				</tr>
-				<tr>
-					<td>Total fees</td>
-					<td>{currFormat(sharesDisplay.totalFees, currencyType)}</td>
-				</tr>
-				<tr>
-					<td>Final price</td>
-					<td>{currFormat(sharesDisplay.finalPrice, currencyType)}</td>
-				</tr>
-			</table>
-		{:else}
-			<!-- else content here -->
-			<p>
-				Not enough cash.
-				{currFormat(minValueShares.finalPrice, currencyType)}
-				is needed to {buyOrSellShares}
-				{minShares}
-				share.
-			</p>
-		{/if}
-	{:else}
-		<p>should not show</p>
-	{/if}
+						<tr>
+							<td>Gross price</td>
+							<td class="uk-text-right"
+								>{currFormat(
+									sharesDisplay.grossPrice,
+									currencyType
+								)}</td
+							>
+						</tr>
+						<tr>
+							<td>Commission</td>
+							<td class="uk-text-right"
+								>{currFormat(
+									sharesDisplay.finalCommission,
+									currencyType
+								)}</td
+							>
+						</tr>
+						<tr>
+							<td>Cess fee</td>
+							<td class="uk-text-right"
+								>{currFormat(
+									sharesDisplay.cess,
+									currencyType
+								)}</td
+							>
+						</tr>
+						<tr>
+							<td>Trade fee</td>
+							<td class="uk-text-right"
+								>{currFormat(
+									sharesDisplay.trade,
+									currencyType
+								)}</td
+							>
+						</tr>
+						<tr>
+							<td>GCT tax</td>
+							<td class="uk-text-right"
+								>{currFormat(
+									sharesDisplay.gct,
+									currencyType
+								)}</td
+							>
+						</tr>
+						<tr>
+							<td>Total fees</td>
+							<td class="uk-text-right"
+								>{currFormat(
+									sharesDisplay.totalFees,
+									currencyType
+								)}</td
+							>
+						</tr>
+						<tr>
+							<td>Final price</td>
+							<td class="uk-text-right"
+								>{currFormat(
+									sharesDisplay.finalPrice,
+									currencyType
+								)}</td
+							>
+						</tr>
+					</table>
+				{:else}
+					<!-- else content here -->
+					<p>
+						Not enough cash.
+						{currFormat(minValueShares.finalPrice, currencyType)}
+						is needed to {buyOrSellShares}
+						{minShares}
+						share.
+					</p>
+				{/if}
+			{/if}
+		</div>
+	</div>
 </div>
