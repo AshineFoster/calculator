@@ -189,8 +189,8 @@
 </script>
 
 <div class="uk-container uk-container-large">
-	<div>
-		<div>
+	<div uk-grid>
+		<div  class="uk-width-1-2">
 			<form class="uk-form-horizontal">
 				<div class="uk-margin">
 					<div class="uk-form-label">Price / Shares:</div>
@@ -274,7 +274,7 @@
 						>
 						<div class="uk-form-controls">
 							<input
-								class="uk-input uk-width-1-3"
+								class="uk-input"
 								id="num-of-shares"
 								type="number"
 								bind:value={numOfShares}
@@ -289,7 +289,7 @@
 						>
 						<div class="uk-form-controls">
 							<input
-								class="uk-input uk-width-1-3"
+								class="uk-input"
 								id="price-per-share-price"
 								type="number"
 								bind:value={pricePerShare}
@@ -307,7 +307,7 @@
 						>
 						<div class="uk-form-controls">
 							<input
-								class="uk-input uk-width-1-3"
+								class="uk-input"
 								id="commission-percent-price"
 								type="number"
 								bind:value={commissionPercent}
@@ -350,7 +350,7 @@
 						>
 						<div class="uk-form-controls">
 							<input
-								class="uk-input uk-width-1-3"
+								class="uk-input"
 								id="cash-avaliable"
 								type="number"
 								bind:value={avaliableCash}
@@ -366,7 +366,7 @@
 						>
 						<div class="uk-form-controls">
 							<input
-								class="uk-input uk-width-1-3"
+								class="uk-input"
 								id="price-per-share-price"
 								type="number"
 								bind:value={pricePerShareShares}
@@ -384,7 +384,7 @@
 						>
 						<div class="uk-form-controls">
 							<input
-								class="uk-input uk-width-1-3"
+								class="uk-input"
 								id="commission-percent-price"
 								type="number"
 								bind:value={commissionPercentShares}
@@ -399,7 +399,7 @@
 			{/if}
 		</div>
 
-		<div>
+		<div  class="uk-width-1-2">
 			{#if sharesOrPrice === "price"}
 				<table class="uk-table uk-table-divider uk-table-middle">
 					<tr>
