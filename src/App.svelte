@@ -58,6 +58,16 @@
 		return formattedCurrency;
 	};
 
+	$: presForm = function (currency) {
+		let prec = "";
+		if (currency == "JMD") {
+			prec = "0.01";
+		} else {
+			prec = "0.0001";
+		}
+		return prec;
+	};
+
 	// find out how much money it cost to buy/sell a certain number of shares
 	let findPrice = function (
 		buyOrSell = "buy",
@@ -66,12 +76,7 @@
 		commissionPercent,
 		minComm
 	) {
-		let curren;
-		if (currencyType == "USD") {
-			curren = USD;
-		} else {
-			curren = JMD;
-		}
+		let curren = (value) => currency(value, { precision: 6 });
 		let grossPrice = curren(numOfShares).multiply(pricePerShare),
 			minCommission = curren(minComm),
 			commission = curren(commissionPercent, { precision: 6 }).divide(
@@ -113,13 +118,7 @@
 		commissionPercent,
 		minComm
 	) {
-		let curren;
-		if (currencyType == "USD") {
-			curren = USD;
-		} else {
-			curren = JMD;
-		}
-
+		let curren = (value) => currency(value, { precision: 6 });
 		let cash = curren(avaliableCash),
 			tempMaxShares = pricePerShare
 				? Math.ceil(cash.divide(pricePerShare).value)
@@ -294,7 +293,7 @@
 								type="number"
 								bind:value={pricePerShare}
 								min="0"
-								step="any"
+								step={presForm(currencyType)}
 							/>
 						</div>
 					</div>
@@ -302,7 +301,8 @@
 					<div class="uk-margin">
 						<label
 							class="uk-form-label"
-							for="commission-percent-price">
+							for="commission-percent-price"
+						>
 							Broker commission (%):</label
 						>
 						<div class="uk-form-controls">
@@ -317,6 +317,7 @@
 						</div>
 					</div>
 				</form>
+
 			{:else if sharesOrPrice === "shares"}
 				<form class="uk-form-horizontal">
 					<div class="uk-margin">
@@ -355,7 +356,7 @@
 								type="number"
 								bind:value={avaliableCash}
 								min="0"
-								step="any"
+								step={presForm(currencyType)}
 							/>
 						</div>
 					</div>
@@ -371,7 +372,7 @@
 								type="number"
 								bind:value={pricePerShareShares}
 								min="0"
-								step="any"
+								step={presForm(currencyType)}
 							/>
 						</div>
 					</div>
@@ -379,7 +380,8 @@
 					<div class="uk-margin">
 						<label
 							class="uk-form-label"
-							for="commission-percent-price">
+							for="commission-percent-price"
+						>
 							Broker commission (%):</label
 						>
 						<div class="uk-form-controls">
